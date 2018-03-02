@@ -52,7 +52,9 @@ This project can be easily edited in [Eclipse for Java](http://www.eclipse.org/d
 ### To Do
 * Add/Update code documentation
 * Refactor (e.g. create interfaces/abstract classes) so that it's easier to add and test other REST APIs
-* Add ability to disable randomly generated data
+* Add features
+    * Output test results in CSV format
+    * Generate graphs from test results 
 
 ## License
 
