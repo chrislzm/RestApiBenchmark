@@ -30,6 +30,10 @@ For the most accurate results, use a very fast Internet connection.
 
 Run the JAR file. If the JAR file does not execute on your system, execute the application with the command `java -jar build/libs/restapi-benchmark-0.1.0.jar`. You may need to remove the `executable = true` line from `build.gradle` and recompile the application first.
 
+### `application.properties` Settings
+
+* `restapi.benchmark.notification.id.output.file`: This file will store the IDs of any objects stored to the REST API. The purpose is so that these objects can be removed from your REST API later, and so that no data currently in database is affected. To delete the data from the REST API's database, simply run a DELETE benchmark and ensure that the `restapi.benchmark.request.total` setting is greater than or equal to the number of ids in the file. The file will be updated as the objects are deleted. If the file is empty, that means that there are no objects that created by the benchmarking tool currently stored in your REST API's database.
+
 ### Command Line Arguments
 
 Please note that any or all of the settings in `application.properties` can also be overridden with command line arguments. Example: `--restapi.benchmark.request.total=1000`
