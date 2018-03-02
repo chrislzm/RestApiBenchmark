@@ -16,7 +16,7 @@ public class UpdateNotificationJob extends SingleNotificationJob {
 
     HttpEntity<Notification> entity;
 
-    UpdateNotificationJob(RestTemplate r, String endpoint, String id, HttpHeaders headers, String updatedEmail, int updatedVariantId, ArrayList<Object[]> c) {
+    UpdateNotificationJob(RestTemplate r, String endpoint, String id, HttpHeaders headers, String updatedEmail, long updatedVariantId, ArrayList<Object[]> c) {
         super(r, endpoint, id, c);
         Notification obj = new Notification(updatedEmail,updatedVariantId);
         obj.setId(id);

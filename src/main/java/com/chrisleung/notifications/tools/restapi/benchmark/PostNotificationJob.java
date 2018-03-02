@@ -18,7 +18,7 @@ public class PostNotificationJob implements Runnable {
     String endPoint;
     ArrayList<Object[]> completedData;
     
-    PostNotificationJob(RestTemplate r, String url, HttpHeaders headers, String email, int index, ArrayList<Object[]> c) {
+    PostNotificationJob(RestTemplate r, String url, HttpHeaders headers, String email, long index, ArrayList<Object[]> c) {
         restTemplate = r;
         endPoint = url;
         Notification obj = new Notification(email,index);
