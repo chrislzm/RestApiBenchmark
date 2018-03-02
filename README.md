@@ -28,9 +28,17 @@ Run the JAR file. If the JAR file does not execute on your system, execute the a
 
 Please note that any or all of the settings in `application.properties` can also be overridden with command line arguments. Example: `--restapi.benchmark.request.total=1000`
 
-## Development Notes
+## Developer Reference
 
-To Do:
+This project can be easily edited in [Eclipse for Java](http://www.eclipse.org/downloads/eclipse-packages/):
+1. Ensure both Gradle and Eclipse are installed
+2. Download this repository to your computer
+3. In Eclipse, open **File** then **Import...**
+4. Under **Gradle**, select **Existing Gradle Project** and click **Next** 
+5. On the **Import Gradle Project** click **Browse** and open the root directory of the project
+6. Click **Finish**
+
+### To Do
 * Add/Update code documentation
 * Refactor (e.g. create interfaces/abstract classes) so that it's easier to add and test other REST APIs
 * Add ability to disable randomly generated data
