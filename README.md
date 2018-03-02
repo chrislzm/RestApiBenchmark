@@ -6,6 +6,10 @@ This documentation is not complete. This application is under active development
 
 This benchmarking tool is by default configured to test the [Back in Stock Database REST API](https://github.com/chrislzm/BackInStock/tree/master/RestApi). For more information, visit the [Back in Stock](https://github.com/chrislzm/BackInStock) project. 
 
+Screenshot:
+
+![REST API Benchmarking Tool Screenshot](doc/screenshot.png "REST API Benchmarking Tool Screenshot")
+
 ## Prerequisites
 
 1. Java
