@@ -66,7 +66,10 @@ public class Application {
     private int totalRequests = 0;
     private long totalTime = 0;
 
-    private Map<RequestType,List<Float>> allRates  = new HashMap<>();
+    // All requests completed/second rates are stored in a list, mapped to the request type
+    private Map<RequestType,List<Float>> allRequestRates  = new HashMap<>();
+    
+    // Used to generate random alphanumeric email addresses
     private RandomString randomString = new RandomString(EMAIL_ADDRESS_LENGTH);
     
     @Autowired
@@ -89,42 +92,45 @@ public class Application {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
 
-            ArrayList<Object[]> completedData = new ArrayList<>();
-            completedData.ensureCapacity(numRequests);
+            ArrayList<Object[]> completedRequests = new ArrayList<>();
+            completedRequests.ensureCapacity(numRequests);
             
+            /* Initialize rate map */
             for(RequestType t : RequestType.values()) {
-                allRates.put(t, new ArrayList<>());
+                allRequestRates.put(t, new ArrayList<>());
             }
             
+            /* Run Benchmarks for Requested Tests */
             for(int i=0; i<runs; i++) {
                 log.info(String.format("\nREST API Benchmark Run %s/%s", i+1, runs,numConcurrent));
                 if(requestType.equals(RequestType.ALL.toString()) || requestType.equals(RequestType.POST.toString())) {
                     threadpool = Executors.newFixedThreadPool(numConcurrent);
-                    postBenchmark(threadpool,headers,completedData);
-                    completedData.clear();
+                    postBenchmark(threadpool,headers,completedRequests);
+                    completedRequests.clear();
                 }
                 if(requestType.equals(RequestType.ALL.toString()) || requestType.equals(RequestType.GET.toString())) {
                     threadpool = Executors.newFixedThreadPool(numConcurrent);
-                    getBenchmark(threadpool,completedData);
-                    completedData.clear();
+                    getBenchmark(threadpool,completedRequests);
+                    completedRequests.clear();
                 }
                 if(requestType.equals(RequestType.ALL.toString()) || requestType.equals(RequestType.PUT.toString())) {
                     threadpool = Executors.newFixedThreadPool(numConcurrent);
-                    updateBenchmark(threadpool,headers,completedData);
-                    completedData.clear();
+                    updateBenchmark(threadpool,headers,completedRequests);
+                    completedRequests.clear();
                 }
                 if(requestType.equals(RequestType.ALL.toString()) || requestType.equals(RequestType.DELETE.toString())) {
                     threadpool = Executors.newFixedThreadPool(numConcurrent);
-                    deleteBenchmark(threadpool,completedData);
-                    completedData.clear();
+                    deleteBenchmark(threadpool,completedRequests);
+                    completedRequests.clear();
                 }
             }
+            /* Output Summary */
             float totalDataPoints = 0;
             float overallAverage = 0;
             float overallBest = 0;
             float overallWorst = Float.MAX_VALUE;
             for(RequestType t : RequestType.values()) {
-                for(float datapoint : allRates.get(t)) {
+                for(float datapoint : allRequestRates.get(t)) {
                     overallBest = Math.max(datapoint, overallBest);
                     overallWorst = Math.min(datapoint, overallWorst);
                     overallAverage = ((overallAverage*totalDataPoints) + datapoint) / (totalDataPoints+1);
@@ -135,84 +141,90 @@ public class Application {
         };
     }
 
-    private void postBenchmark(ExecutorService threadpool,HttpHeaders headers,ArrayList<Object[]> completedData) throws Exception {
+    private void postBenchmark(ExecutorService threadpool,HttpHeaders headers,ArrayList<Object[]> completedRequests) throws Exception {
 
         Runnable[] jobs = new Runnable[numRequests];
 
         /* Create jobs */
         for(int i=0; i<numRequests; i++) {
-            jobs[i] = new PostNotificationJob(restTemplate,endpoint,headers,getRandomEmail(),getRandomVariantId(),completedData);
+            jobs[i] = new PostNotificationJob(restTemplate,endpoint,headers,generateRandomEmail(),generateRandomVariantId(),completedRequests);
         }
 
         /* Run jobs */
-        runBenchmark(jobs,threadpool,completedData,RequestType.POST);
+        runBenchmark(jobs,threadpool,completedRequests,RequestType.POST);
 
-        /* Write IDs to file */
+        /* Output IDs to file */
         BufferedWriter writer = new BufferedWriter(new FileWriter(outputFilename,true));
-        for(Object[] data : completedData) {
+        for(Object[] data : completedRequests) {
             writer.write((String)data[1]+'\n');
         }
         writer.close();
     }
 
-    private void getBenchmark(ExecutorService threadpool, ArrayList<Object[]> completedData) throws Exception {
-        setupAuth();
+    private void getBenchmark(ExecutorService threadpool, ArrayList<Object[]> completedRequests) throws Exception {
+        setupHttpAuth();
+        
+        /* Create jobs */
         int numIds = Math.min(getNumIdRecords(), numRequests);
         Scanner scanner = new Scanner(new FileReader(outputFilename));        
-        /* Create jobs */
         Runnable[] jobs = new Runnable[numIds];
         for(int i=0; i<numIds; i++) {
-            jobs[i] = new GetNotificationJob(restTemplate, endpoint, scanner.next(), completedData);
+            jobs[i] = new GetNotificationJob(restTemplate, endpoint, scanner.next(), completedRequests);
         }
         scanner.close();
 
         /* Run jobs */
-        runBenchmark(jobs,threadpool,completedData,RequestType.GET);
+        runBenchmark(jobs,threadpool,completedRequests,RequestType.GET);
     }
 
-    private void updateBenchmark(ExecutorService threadpool,HttpHeaders headers,ArrayList<Object[]> completedData) throws Exception {
-        setupAuth();
+    private void updateBenchmark(ExecutorService threadpool,HttpHeaders headers,ArrayList<Object[]> completedRequests) throws Exception {
+        setupHttpAuth();
+        
+        /* Create jobs */
         int numIds = Math.min(getNumIdRecords(), numRequests);
         Scanner scanner = new Scanner(new FileReader(outputFilename));        
-        /* Create jobs */
         Runnable[] jobs = new Runnable[numIds];
         for(int i=0; i<numIds; i++) {
-            jobs[i] = new UpdateNotificationJob(restTemplate, endpoint, scanner.next(), headers, getRandomEmail(), getRandomVariantId(), completedData);
+            jobs[i] = new UpdateNotificationJob(restTemplate, endpoint, scanner.next(), headers, generateRandomEmail(), generateRandomVariantId(), completedRequests);
         }
         scanner.close();
 
         /* Run jobs */
-        runBenchmark(jobs,threadpool,completedData,RequestType.PUT);	    
+        runBenchmark(jobs,threadpool,completedRequests,RequestType.PUT);	    
     }
 
-    private void deleteBenchmark(ExecutorService threadpool, ArrayList<Object[]> completedData) throws Exception {
-        setupAuth();
+    private void deleteBenchmark(ExecutorService threadpool, ArrayList<Object[]> completedRequests) throws Exception {
+        setupHttpAuth();
+        
+        /* Create jobs */
         int numIds = Math.min(getNumIdRecords(), numRequests);
         Scanner scanner = new Scanner(new FileReader(outputFilename));
-
-        /* Create jobs */
         Runnable[] jobs = new Runnable[numIds];
         for(int i=0; i<numIds; i++) {
-            jobs[i] = new DeleteNotificationJob(restTemplate, endpoint, scanner.next(), completedData);
+            jobs[i] = new DeleteNotificationJob(restTemplate, endpoint, scanner.next(), completedRequests);
         }
         scanner.close();
 
         /* Run jobs */
-        runBenchmark(jobs,threadpool,completedData,RequestType.DELETE);
+        runBenchmark(jobs,threadpool,completedRequests,RequestType.DELETE);
 
-        /* Delete deleted ids from file */
+        /* Read all ids from output file into a HashSet */
         scanner = new Scanner(new FileReader(outputFilename));
         HashSet<String> remainingIds = new HashSet<>();
         while(scanner.hasNextLine()) {
             remainingIds.add(scanner.nextLine());
         }
         scanner.close();
-        for(Object[] data : completedData) {
+        
+        /* Remove deleted ids from the HashSet */
+        for(Object[] data : completedRequests) {
             String id = (String)data[1];
             if(remainingIds.contains(id)) {
                 remainingIds.remove(id);
             }
         }
+        
+        /* Output the remaining ids to the file */
         BufferedWriter writer = new BufferedWriter(new FileWriter(outputFilename));
         for(String id : remainingIds) {
             writer.write(id+'\n');
@@ -220,7 +232,46 @@ public class Application {
         writer.close();
     }
 
-    private void setupAuth() {
+    private void runBenchmark(Runnable[] jobs, ExecutorService threadpool, ArrayList<Object[]> completedRequests, RequestType requestType) throws Exception {
+        /* Submit jobs */
+        for(Runnable job : jobs) {
+            threadpool.execute(job);
+        }
+        threadpool.shutdown();
+        /* Start the benchmark here, because there is overhead from submitting jobs, which slows our request throughput */
+        Date benchmarkStart = new Date();
+        threadpool.awaitTermination(timelimit, TimeUnit.SECONDS);
+
+        /* Find the first job after the shutdown was submitted */
+        for(int i=0; i<completedRequests.size(); i++) {
+            if(((Date)completedRequests.get(i)[0]).getTime() >= benchmarkStart.getTime()) {
+                Date firstRequest = (Date)completedRequests.get(i)[0];
+                Date lastRequest = (Date)completedRequests.get(completedRequests.size()-1)[0];
+                long elapsedTime = lastRequest.getTime() - firstRequest.getTime();
+                totalTime += elapsedTime;
+                int numCompleted = completedRequests.size()-i;
+                totalRequests += numCompleted;
+                /* Log Status */
+                float seconds = elapsedTime/1000.0f;
+                float currentRate = numCompleted/seconds;
+                float bestRate = 0;
+                float worstRate = Float.MAX_VALUE;
+                List<Float> rates = allRequestRates.get(requestType);
+                rates.add(currentRate);
+                float averageRate = 0;
+                for(float rate : rates) {
+                    averageRate += rate;
+                    worstRate = Math.min(worstRate, rate);
+                    bestRate = Math.max(bestRate, rate);
+                }
+                averageRate /= rates.size();
+                log.info(String.format("\nCompleted %s %s requests in %ss (%s req/s). Best = %s req/s, Worst = %s req/s, Average = %s req/s", numCompleted,requestType.toString(),seconds,currentRate,bestRate,worstRate,averageRate));
+                break;
+            }
+        }
+    }
+    
+    private void setupHttpAuth() {
         BasicAuthorizationInterceptor auth  = new BasicAuthorizationInterceptor(username, password);
         restTemplate.getInterceptors().add(auth);
     }
@@ -236,49 +287,11 @@ public class Application {
         return count;
     }
     
-    private String getRandomEmail() {
+    private String generateRandomEmail() {
         return randomString.nextString() + '@' + randomString.nextString() + ".com";
     }
     
-    private int getRandomVariantId() {
+    private int generateRandomVariantId() {
         return (int)(Math.random() * Integer.MAX_VALUE);
-    }
-
-    private void runBenchmark(Runnable[] jobs, ExecutorService threadpool, ArrayList<Object[]> completedData, RequestType requestType) throws Exception {
-        /* Submit jobs */
-        for(Runnable job : jobs) {
-            threadpool.execute(job);
-        }
-        threadpool.shutdown();
-        Date start = new Date();
-        threadpool.awaitTermination(timelimit, TimeUnit.SECONDS);
-
-        /* Find the first job after the shutdown was submitted */
-        for(int i=0; i<completedData.size(); i++) {
-            if(((Date)completedData.get(i)[0]).getTime() >= start.getTime()) {
-                Date first = (Date)completedData.get(i)[0];
-                Date last = (Date)completedData.get(completedData.size()-1)[0];
-                long elapsed = last.getTime() - first.getTime();
-                totalTime += elapsed;
-                int numCompleted = completedData.size()-i;
-                totalRequests += numCompleted;
-                /* Log Status */
-                float seconds = elapsed/1000.0f;
-                float currentRate = numCompleted/seconds;
-                float bestRate = 0;
-                float worstRate = Float.MAX_VALUE;
-                List<Float> rates = allRates.get(requestType);
-                rates.add(currentRate);
-                float averageRate = 0;
-                for(float rate : rates) {
-                    averageRate += rate;
-                    worstRate = Math.min(worstRate, rate);
-                    bestRate = Math.max(bestRate, rate);
-                }
-                averageRate /= rates.size();
-                log.info(String.format("\nCompleted %s %s requests in %ss (%s req/s). Best = %s req/s, Worst = %s req/s, Average = %s req/s", numCompleted,requestType.toString(),seconds,currentRate,bestRate,worstRate,averageRate));
-                break;
-            }
-        }
     }
 }
