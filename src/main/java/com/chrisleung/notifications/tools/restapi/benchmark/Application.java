@@ -131,7 +131,7 @@ public class Application {
                     totalDataPoints++;
                 }
             }
-            log.info(String.format("\nSummary: Total Requests = %s, Total Runs = %s, Concurrent Connections = %s, Random Data = %s\nOverall: Best = %s req/s, Worst = %s req/s, Average = %s req/s",totalRequests,runs,numConcurrent,randomData,overallBest,overallWorst,overallAverage));
+            log.info(String.format("\nSummary: Total Requests = %s, Total Time = %ss, Total Runs = %s, Concurrent Connections = %s, Random Data = %s\nOverall: Best = %s req/s, Worst = %s req/s, Average = %s req/s",totalRequests,totalTime/1000f,runs,numConcurrent,randomData,overallBest,overallWorst,overallAverage));
         };
     }
 
@@ -259,6 +259,7 @@ public class Application {
                 Date first = (Date)completedData.get(i)[0];
                 Date last = (Date)completedData.get(completedData.size()-1)[0];
                 long elapsed = last.getTime() - first.getTime();
+                totalTime += elapsed;
                 int numCompleted = completedData.size()-i;
                 totalRequests += numCompleted;
                 /* Log Status */
