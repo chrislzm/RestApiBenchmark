@@ -49,6 +49,10 @@ This project can be easily edited in [Eclipse for Java](http://www.eclipse.org/d
 5. On the **Import Gradle Project** click **Browse** and open the root directory of the project
 6. Click **Finish**
 
+### Notification Object
+
+This application is currently configured to test the [Back in Stock Database REST API](https://github.com/chrislzm/BackInStock/tree/master/RestApi). The Notification object used in each request is located in the [Objects](https://github.com/chrislzm/BackInStock/tree/master/RestApi/Objects) directory of the REST API project.
+
 ### To Do
 * Add/Update code documentation
 * Refactor (e.g. create interfaces/abstract classes) so that it's easier to add and test other REST APIs
