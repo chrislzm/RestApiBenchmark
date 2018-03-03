@@ -185,7 +185,7 @@ public class Application {
         Scanner scanner = new Scanner(new FileReader(outputFilename));        
         Runnable[] jobs = new Runnable[numIds];
         for(int i=0; i<numIds; i++) {
-            jobs[i] = new UpdateNotificationJob(restTemplate, endpoint, scanner.next(), headers, generateRandomEmail(), generateRandomVariantId(), completedRequests);
+            jobs[i] = new PutNotificationJob(restTemplate, endpoint, scanner.next(), headers, generateRandomEmail(), generateRandomVariantId(), completedRequests);
         }
         scanner.close();
 

@@ -12,11 +12,11 @@ import org.springframework.web.client.RestTemplate;
 import com.chrisleung.notifications.objects.Notification;
 import com.chrisleung.notifications.objects.NotificationWrapper;
 
-public class UpdateNotificationJob extends SingleNotificationJob {
+public class PutNotificationJob extends SingleNotificationJob {
 
     HttpEntity<Notification> entity;
 
-    UpdateNotificationJob(RestTemplate r, String endpoint, String id, HttpHeaders headers, String updatedEmail, long updatedVariantId, ArrayList<Object[]> c) {
+    PutNotificationJob(RestTemplate r, String endpoint, String id, HttpHeaders headers, String updatedEmail, long updatedVariantId, ArrayList<Object[]> c) {
         super(r, endpoint, id, c);
         Notification obj = new Notification(updatedEmail,updatedVariantId);
         obj.setId(id);
