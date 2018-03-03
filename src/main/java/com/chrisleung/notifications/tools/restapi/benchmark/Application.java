@@ -63,10 +63,11 @@ public class Application {
     @Value("${restapi.benchmark.randomData}")
     private boolean randomData;
     
-    private int totalRequests;
+    private int totalRequests = 0;
+    private long totalTime = 0;
 
-    private Map<RequestType,List<Float>> allRates;
-    private RandomString randomString;
+    private Map<RequestType,List<Float>> allRates  = new HashMap<>();
+    private RandomString randomString = new RandomString(EMAIL_ADDRESS_LENGTH);
     
     @Autowired
     private RestTemplate restTemplate;    
@@ -84,7 +85,6 @@ public class Application {
     public CommandLineRunner run() throws Exception {
         return args -> {
             ExecutorService threadpool;
-            totalRequests = 0;
             
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
@@ -92,12 +92,10 @@ public class Application {
             ArrayList<Object[]> completedData = new ArrayList<>();
             completedData.ensureCapacity(numRequests);
             
-            allRates = new HashMap<>();
             for(RequestType t : RequestType.values()) {
                 allRates.put(t, new ArrayList<>());
             }
-            randomString = new RandomString(EMAIL_ADDRESS_LENGTH);
-
+            
             for(int i=0; i<runs; i++) {
                 log.info(String.format("\nREST API Benchmark Run %s/%s", i+1, runs,numConcurrent));
                 if(requestType.equals(RequestType.ALL.toString()) || requestType.equals(RequestType.POST.toString())) {
