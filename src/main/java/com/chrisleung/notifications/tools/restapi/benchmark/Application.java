@@ -115,7 +115,7 @@ public class Application {
                 }
                 if(requestType.equals(RequestType.ALL.toString()) || requestType.equals(RequestType.PUT.toString())) {
                     threadpool = Executors.newFixedThreadPool(numConcurrent);
-                    updateBenchmark(threadpool,headers,completedRequests);
+                    putBenchmark(threadpool,headers,completedRequests);
                     completedRequests.clear();
                 }
                 if(requestType.equals(RequestType.ALL.toString()) || requestType.equals(RequestType.DELETE.toString())) {
@@ -177,7 +177,7 @@ public class Application {
         runBenchmark(jobs,threadpool,completedRequests,RequestType.GET);
     }
 
-    private void updateBenchmark(ExecutorService threadpool,HttpHeaders headers,ArrayList<Object[]> completedRequests) throws Exception {
+    private void putBenchmark(ExecutorService threadpool,HttpHeaders headers,ArrayList<Object[]> completedRequests) throws Exception {
         setupHttpAuth();
         
         /* Create jobs */
