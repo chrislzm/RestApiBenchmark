@@ -60,6 +60,10 @@ This application is currently configured to test the [Back in Stock Database RES
     * Output test results in CSV format
     * Generate graphs from test results 
 
+## See Also
+
+* [Apache JMeter](http://jmeter.apache.org/)
+
 ## License
 
 Copyright (c) 2018 [Chris Leung](https://github.com/chrislzm)
