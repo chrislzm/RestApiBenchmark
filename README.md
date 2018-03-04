@@ -65,10 +65,10 @@ This application is currently configured to test the [Back in Stock Database RES
 Other open-source benchmarking tools:
 
 * Simple (but unable to generate randomized data)
-    * [ab](https://httpd.apache.org/docs/2.4/programs/ab.html) -
+    * [ab](https://httpd.apache.org/docs/2.4/programs/ab.html)
     * [wrk](https://github.com/wg/wrk) 
 * Comprehensive
-    * [Apache JMeter](http://jmeter.apache.org/)
+    * [JMeter](http://jmeter.apache.org/)
  
 ## License
 
