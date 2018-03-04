@@ -30,7 +30,7 @@ This Java application implements an simple benchmarking tool that measures perfo
 
 ### Configuration
 
-For a list of options, see the [`application.properties`](src/main/resources/application.properties.blank) configuration file.
+For a full list of options, see the [`application.properties`](src/main/resources/application.properties.blank) configuration file.
 * `restapi.benchmark.notification.id.output.file`: This file will store the IDs of any objects stored to the REST API. The purpose is so that these objects can be removed from your REST API later, and so that no data currently in database is affected. To delete the data from the REST API's database, simply run a DELETE benchmark and ensure that the `restapi.benchmark.request.total` setting is greater than or equal to the number of ids in the file. The file will be updated as the objects are deleted. If the file is empty, that means that there are no objects that created by the benchmarking tool currently stored in your REST API's database.
 
 ## Deployment
