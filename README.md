@@ -4,7 +4,7 @@ This Java application implements an simple benchmarking tool that measures perfo
 
 This documentation is not complete. This application is under active development.
 
-This benchmarking tool is by default configured to test the [Back in Stock Database REST API](https://github.com/chrislzm/BackInStock/tree/master/RestApi). For more information, visit the [Back in Stock](https://github.com/chrislzm/BackInStock) project. 
+This benchmarking tool is by default configured to test the [Back in Stock Database REST API](https://github.com/chrislzm/BackInStock/tree/master/RestApi) (visit the [Back in Stock](https://github.com/chrislzm/BackInStock) project for more information), but it can be modified to test other REST APIs.
 
 Screenshot:
 
