@@ -51,7 +51,7 @@ This project can be easily edited in [Eclipse for Java](http://www.eclipse.org/d
 
 ### Notification Object
 
-This application is currently configured to test the [Back in Stock Database REST API](https://github.com/chrislzm/BackInStock/tree/master/RestApi). The Notification object used in each request is located in the [Objects](https://github.com/chrislzm/BackInStock/tree/master/RestApi/Objects) directory of the REST API project.
+This application is currently configured to test the [Back in Stock Database REST API](https://github.com/chrislzm/BackInStock/tree/master/RestApi). The Notification object used in each request is located in the [Objects](https://github.com/chrislzm/BackInStock/tree/master/RestApi/Objects) directory of the [Back in Stock](https://github.com/chrislzm/BackInStock) project.
 
 ### To Do
 * Add/Update code documentation
