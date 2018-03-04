@@ -1,15 +1,6 @@
 # REST API Benchmarking Tool
 
-This Java application implements an simple benchmarking tool that measures performance of a CRUD REST API.
-
-### Features
-
-* Individually tests the POST, PUT, GET, and DELETE methods of a REST API endpoint
-* Generates randomized data for each request
-* Maintains a persistent record of which data has been added to the database so that it can be easily removed later (see Configuration section below)
-* Number of concurrent connections, requests, test runs and more are all configurable
-
-### Screenshot
+This Java application implements an simple benchmarking tool that measures performance of a CRUD REST API. It separately tests the POST, PUT, GET, and DELETE methods of a REST API endpoint and generates randomized data for the POST and PUT requests. It also maintains a file record of which data has been added to the database so that it can be easily removed later. The number of concurrent connections, requests, test runs and time limit are all configurable.
 
 ![REST API Benchmarking Tool Screenshot](doc/screenshot.png "REST API Benchmarking Tool Screenshot")
 
