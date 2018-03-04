@@ -6,7 +6,7 @@ This Java application implements an simple benchmarking tool that measures perfo
 
 * Individually tests the POST, PUT, GET, and DELETE methods of a REST API endpoint
 * Generates randomized data for each request
-* Maintains a persistent record of which data has been added to the database so that it can be removed later (see Configuration below)
+* Maintains a persistent record of which data has been added to the database so that it can be easily removed later (see Configuration section below)
 * Number of concurrent connections, requests, test runs and more are all configurable
 
 ### Screenshot
