@@ -28,7 +28,7 @@ For a full list of options, see the [`application.properties`](src/main/resource
 
 ## Deployment
 
-For the most accurate results, use a very fast Internet connection.
+For the most accurate results, use high-throughput low-latency Internet connection and a multi-core CPU with plenty of memory. It's highly recommended that you monitor CPU and memory usage on both the server running the REST API and the server running this benchmarking tool to identify bottlenecks.
 
 Run the JAR file. If the JAR file does not execute on your system, execute the application with the command `java -jar build/libs/restapi-benchmark-0.1.0.jar`. You may need to remove the `executable = true` line from `build.gradle` and recompile the application first.
 
