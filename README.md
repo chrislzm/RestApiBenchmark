@@ -57,6 +57,12 @@ This application is currently configured to test the [Back in Stock Database RES
     * Output test results in CSV format
     * Generate graphs from test results 
 
+## Built with
+
+* [Spring Boot](https://projects.spring.io/spring-boot/)
+* [Simple Logging Facade for Java](https://www.slf4j.org/)
+* [Gradle](https://gradle.org/)
+
 ## See Also
 
 Other open-source benchmarking tools:
