@@ -55,7 +55,7 @@ This application is currently configured to test the [Back in Stock Database RES
 * Refactor (e.g. create interfaces/abstract classes) so that it's easier to add and test other REST APIs
 * Add features
     * Output test results in CSV format
-    * Generate graphs from test results 
+    * Progress indicator during testing
 
 ## Built with
 
