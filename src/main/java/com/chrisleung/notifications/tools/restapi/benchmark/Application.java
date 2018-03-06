@@ -238,10 +238,11 @@ public class Application {
             threadpool.execute(job);
         }
         threadpool.shutdown();
-        /* Start the benchmark here, because there is overhead from submitting jobs, which slows our request throughput */
+        /* Start the benchmark here, because there is overhead from submitting jobs and ramp-up, which biases request throughput */
         Date benchmarkStart = new Date();
         threadpool.awaitTermination(timelimit, TimeUnit.SECONDS);
-
+        threadpool.shutdownNow();
+        
         /* Find the first job after the shutdown was submitted */
         for(int i=0; i<completedRequests.size(); i++) {
             if(((Date)completedRequests.get(i)[0]).getTime() >= benchmarkStart.getTime()) {
@@ -251,6 +252,7 @@ public class Application {
                 totalTime += elapsedTime;
                 int numCompleted = completedRequests.size()-i;
                 totalRequests += numCompleted;
+                
                 /* Log Status */
                 float seconds = elapsedTime/1000.0f;
                 float currentRate = numCompleted/seconds;
