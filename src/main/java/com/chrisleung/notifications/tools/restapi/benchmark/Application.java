@@ -39,6 +39,7 @@ import org.springframework.web.client.RestTemplate;
 public class Application {
     
     static final int EMAIL_ADDRESS_LENGTH = 9; // total length will be 2x this plus 4 (@ and .com chars)
+    static final float MS_PER_SECOND = 1000;
     
     private static final Logger log = LoggerFactory.getLogger(Application.class);
 
@@ -254,7 +255,7 @@ public class Application {
                 totalRequests += numCompleted;
                 
                 /* Log Status */
-                float seconds = elapsedTime/1000.0f;
+                float seconds = elapsedTime/MS_PER_SECOND;
                 float currentRate = numCompleted/seconds;
                 float bestRate = 0;
                 float worstRate = Float.MAX_VALUE;
