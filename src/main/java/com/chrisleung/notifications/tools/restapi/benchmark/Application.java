@@ -64,8 +64,9 @@ public class Application {
     @Value("${restapi.benchmark.randomData}")
     private boolean randomData;
     
+    // Variables used for log output
     private int totalRequests = 0;
-    private long totalTime = 0;
+    private long totalElapsedTime = 0;
 
     // All requests completed/second rates are stored in a list, mapped to the request type
     private Map<RequestType,List<Float>> allRequestRates  = new HashMap<>();
@@ -138,7 +139,7 @@ public class Application {
                     totalDataPoints++;
                 }
             }
-            log.info(String.format("\nSummary: Total Requests = %s, Total Time = %ss, Total Runs = %s, Concurrent Connections = %s, Random Data = %s\nOverall: Best = %s req/s, Worst = %s req/s, Average = %s req/s",totalRequests,totalTime/1000f,runs,numConcurrent,randomData,overallBest,overallWorst,overallAverage));
+            log.info(String.format("\nSummary: Total Requests = %s, Total Time = %ss, Total Runs = %s, Concurrent Connections = %s, Random Data = %s\nOverall: Best = %s req/s, Worst = %s req/s, Average = %s req/s",totalRequests,totalElapsedTime/1000f,runs,numConcurrent,randomData,overallBest,overallWorst,overallAverage));
         };
     }
 
@@ -250,7 +251,7 @@ public class Application {
                 Date firstRequest = (Date)completedRequests.get(i)[0];
                 Date lastRequest = (Date)completedRequests.get(completedRequests.size()-1)[0];
                 long elapsedTime = lastRequest.getTime() - firstRequest.getTime();
-                totalTime += elapsedTime;
+                totalElapsedTime += elapsedTime;
                 int numCompleted = completedRequests.size()-i;
                 totalRequests += numCompleted;
                 
