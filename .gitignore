@@ -24,3 +24,4 @@ nbdist/
 .nb-gradle/
 /bin/
 /.DS_Store
+/ids.txt
