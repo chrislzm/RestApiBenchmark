@@ -11,6 +11,11 @@ import org.springframework.web.client.RestTemplate;
 
 import com.chrisleung.notifications.objects.Notification;
 
+/**
+ * Posts a new notification to the REST API
+ * 
+ * @author Chris Leung
+ */
 public class PostNotificationJob implements Runnable {
 
     RestTemplate restTemplate;
