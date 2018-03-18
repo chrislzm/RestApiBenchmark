@@ -9,14 +9,14 @@ import org.springframework.web.client.RestTemplate;
 
 public class DeleteNotificationJob extends SingleNotificationJob {
 
-    DeleteNotificationJob(RestTemplate r, String endpoint, String id, ArrayList<Object[]> c) {
+    DeleteNotificationJob(RestTemplate r, String endpoint, String id, ArrayList<CompletedRequest> c) {
         super(r, endpoint, id, c);
     }
 
     @Override
     public void run() {
         ResponseEntity<Response> response = restTemplate.exchange(url, HttpMethod.DELETE, null, Response.class);
-        Object[] completedInfo = new Object[] {new Date(), response.getBody().getId()};
+        CompletedRequest completedInfo = new CompletedRequest(new Date(), response.getBody().getId());
         synchronized(completedData) {
             completedData.add(completedInfo);
         }

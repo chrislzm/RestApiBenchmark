@@ -16,9 +16,9 @@ public class PostNotificationJob implements Runnable {
     RestTemplate restTemplate;
     HttpEntity<Notification> entity;
     String endPoint;
-    ArrayList<Object[]> completedData;
+    ArrayList<CompletedRequest> completedData;
     
-    PostNotificationJob(RestTemplate r, String url, HttpHeaders headers, String email, long index, ArrayList<Object[]> c) {
+    PostNotificationJob(RestTemplate r, String url, HttpHeaders headers, String email, long index, ArrayList<CompletedRequest> c) {
         restTemplate = r;
         endPoint = url;
         Notification obj = new Notification(email,index);
@@ -29,7 +29,7 @@ public class PostNotificationJob implements Runnable {
     @Override
     public void run() {
         ResponseEntity<Response> response = restTemplate.exchange(endPoint, HttpMethod.POST, entity, Response.class);
-        Object[] completedInfo = new Object[] {new Date(), response.getBody().getId()};
+        CompletedRequest completedInfo = new CompletedRequest(new Date(), response.getBody().getId());
         synchronized(completedData) {
             completedData.add(completedInfo);
         }

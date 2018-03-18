@@ -7,9 +7,9 @@ import org.springframework.web.client.RestTemplate;
 public abstract class SingleNotificationJob implements Runnable {
     RestTemplate restTemplate;
     String url;
-    ArrayList<Object[]> completedData;
+    ArrayList<CompletedRequest> completedData;
     
-    SingleNotificationJob(RestTemplate r, String endpoint, String id, ArrayList<Object[]> c) {
+    SingleNotificationJob(RestTemplate r, String endpoint, String id, ArrayList<CompletedRequest> c) {
         restTemplate = r;
         url = endpoint + '/' + id;
         completedData = c;

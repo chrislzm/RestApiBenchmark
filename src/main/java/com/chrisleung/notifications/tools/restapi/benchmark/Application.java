@@ -133,7 +133,7 @@ public class Application {
 
     private void runBenchmark(RequestType requestType) throws Exception {
 
-        ArrayList<Object[]> completedRequests = new ArrayList<>();
+        ArrayList<CompletedRequest> completedRequests = new ArrayList<>();
         completedRequests.ensureCapacity(numRequests);
         
         HttpHeaders headers = new HttpHeaders();
@@ -187,9 +187,9 @@ public class Application {
         
         /* Find the first job after the shutdown was submitted */
         for(int i=0; i<completedRequests.size(); i++) {
-            if(((Date)completedRequests.get(i)[0]).getTime() >= benchmarkStart.getTime()) {
-                Date firstRequest = (Date)completedRequests.get(i)[0];
-                Date lastRequest = (Date)completedRequests.get(completedRequests.size()-1)[0];
+            if(completedRequests.get(i).getDate().getTime() >= benchmarkStart.getTime()) {
+                Date firstRequest = completedRequests.get(i).getDate();
+                Date lastRequest = completedRequests.get(completedRequests.size()-1).getDate();
                 long elapsedTime = lastRequest.getTime() - firstRequest.getTime();
                 totalElapsedTime += elapsedTime;
                 int numCompleted = completedRequests.size()-i;
@@ -219,8 +219,8 @@ public class Application {
         case POST:
             /* Write added IDs out to file */
             writer = new BufferedWriter(new FileWriter(outputFilename,true));
-            for(Object[] data : completedRequests) {
-                writer.write((String)data[1]+'\n');
+            for(CompletedRequest completedRequest : completedRequests) {
+                writer.write(completedRequest.getId() + '\n');
             }
             writer.close();
             break;
@@ -233,8 +233,8 @@ public class Application {
             }
             scanner.close();
             /* Remove deleted ids from the HashSet */
-            for(Object[] data : completedRequests) {
-                String id = (String)data[1];
+            for(CompletedRequest completedRequest : completedRequests) {
+                String id = completedRequest.getId();
                 if(remainingIds.contains(id)) {
                     remainingIds.remove(id);
                 }

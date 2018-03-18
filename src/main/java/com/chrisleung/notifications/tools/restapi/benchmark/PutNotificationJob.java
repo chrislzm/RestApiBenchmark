@@ -16,7 +16,7 @@ public class PutNotificationJob extends SingleNotificationJob {
 
     HttpEntity<Notification> entity;
 
-    PutNotificationJob(RestTemplate r, String endpoint, String id, HttpHeaders headers, String updatedEmail, long updatedVariantId, ArrayList<Object[]> c) {
+    PutNotificationJob(RestTemplate r, String endpoint, String id, HttpHeaders headers, String updatedEmail, long updatedVariantId, ArrayList<CompletedRequest> c) {
         super(r, endpoint, id, c);
         Notification obj = new Notification(updatedEmail,updatedVariantId);
         obj.setId(id);
@@ -26,7 +26,7 @@ public class PutNotificationJob extends SingleNotificationJob {
     @Override
     public void run() {
         ResponseEntity<NotificationWrapper> response = restTemplate.exchange(url, HttpMethod.PUT, entity, NotificationWrapper.class);
-        Object[] completedInfo = new Object[] {new Date(),response.getBody().getNotifications().iterator().next().getId()};
+        CompletedRequest completedInfo = new CompletedRequest(new Date(),response.getBody().getNotifications().iterator().next().getId());
         synchronized(completedData) {
             completedData.add(completedInfo);
         }
