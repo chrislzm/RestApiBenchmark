@@ -26,10 +26,8 @@ public class PutNotificationJob extends SingleNotificationJob {
     @Override
     public void run() {
         ResponseEntity<NotificationWrapper> response = restTemplate.exchange(url, HttpMethod.PUT, entity, NotificationWrapper.class);
-        CompletedRequest completedInfo = new CompletedRequest(new Date(),response.getBody().getNotifications().iterator().next().getId());
-        synchronized(completedData) {
-            completedData.add(completedInfo);
-        }
+        CompletedRequest completedRequest = new CompletedRequest(new Date(),response.getBody().getNotifications().iterator().next().getId());
+        addCompletedRequest(completedRequest);
     }
 
 }

@@ -12,14 +12,20 @@ import org.springframework.web.client.RestTemplate;
 public abstract class SingleNotificationJob implements Runnable {
     RestTemplate restTemplate;
     String url;
-    ArrayList<CompletedRequest> completedData;
+    ArrayList<CompletedRequest> completedRequests;
     
     SingleNotificationJob(RestTemplate r, String endpoint, String id, ArrayList<CompletedRequest> c) {
         restTemplate = r;
         url = endpoint + '/' + id;
-        completedData = c;
+        completedRequests = c;
     }
     
     @Override
     public abstract void run();
+    
+    void addCompletedRequest(CompletedRequest c) {
+        synchronized(completedRequests) {
+            completedRequests.add(c);
+        }
+    }
 }
