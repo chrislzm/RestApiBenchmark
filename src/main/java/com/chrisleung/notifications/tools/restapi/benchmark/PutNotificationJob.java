@@ -12,7 +12,7 @@ import org.springframework.web.client.RestTemplate;
 import com.chrisleung.notifications.objects.Notification;
 import com.chrisleung.notifications.objects.NotificationWrapper;
 
-public class PutNotificationJob extends SingleNotificationJob {
+public class PutNotificationJob extends NotificationJob {
 
     HttpEntity<Notification> entity;
 

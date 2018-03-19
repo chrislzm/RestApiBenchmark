@@ -7,7 +7,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-public class DeleteNotificationJob extends SingleNotificationJob {
+public class DeleteNotificationJob extends NotificationJob {
 
     DeleteNotificationJob(RestTemplate r, String endpoint, String id, ArrayList<CompletedRequest> c) {
         super(r, endpoint, id, c);
