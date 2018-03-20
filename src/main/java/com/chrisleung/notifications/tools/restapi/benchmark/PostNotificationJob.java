@@ -16,27 +16,22 @@ import com.chrisleung.notifications.objects.Notification;
  * 
  * @author Chris Leung
  */
-public class PostNotificationJob implements Runnable {
+public class PostNotificationJob extends NotificationJob {
 
-    RestTemplate restTemplate;
     HttpEntity<Notification> entity;
-    String endPoint;
-    ArrayList<CompletedRequest> completedData;
     
-    PostNotificationJob(RestTemplate r, String url, HttpHeaders headers, String email, long index, ArrayList<CompletedRequest> c) {
-        restTemplate = r;
-        endPoint = url;
-        Notification obj = new Notification(email,index);
+    PostNotificationJob(RestTemplate r, String url, HttpHeaders headers, String email, long variantId, ArrayList<CompletedRequest> c) {
+        super(r,url,null,c);
+        Notification obj = new Notification(email,variantId);
         entity = new HttpEntity<>(obj,headers);
-        completedData = c;
     }
     
     @Override
     public void run() {
-        ResponseEntity<Response> response = restTemplate.exchange(endPoint, HttpMethod.POST, entity, Response.class);
+        ResponseEntity<Response> response = restTemplate.exchange(url, HttpMethod.POST, entity, Response.class);
         CompletedRequest completedInfo = new CompletedRequest(new Date(), response.getBody().getId());
-        synchronized(completedData) {
-            completedData.add(completedInfo);
+        synchronized(completedRequests) {
+            completedRequests.add(completedInfo);
         }
     }
 }
