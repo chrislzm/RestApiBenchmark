@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import org.springframework.web.client.RestTemplate;
 
 /**
- * Used to perform POST, GET, DELETE, or PUT methods on a single notification.
+ * Used to perform POST, GET, DELETE, or PUT methods on a REST API for a single notification
  * 
  * @author Chris Leung
  */
