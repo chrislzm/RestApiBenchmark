@@ -16,7 +16,7 @@ public abstract class NotificationJob implements Runnable {
     
     NotificationJob(RestTemplate r, String endpoint, String id, ArrayList<CompletedRequest> c) {
         restTemplate = r;
-        url = endpoint + '/' + id;
+        url = id == null ? endpoint : endpoint + '/' + id;
         completedRequests = c;
     }
     
