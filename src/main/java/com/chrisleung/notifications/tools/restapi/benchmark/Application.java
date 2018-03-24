@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -171,6 +172,44 @@ public class Application {
         return jobs;
     }
     
+    private void finishJobs(RequestType requestType, ArrayList<CompletedRequest> completedRequests) throws IOException {
+        BufferedWriter writer;
+        switch(requestType) {
+        case POST:
+            /* Write added IDs out to file */
+            writer = new BufferedWriter(new FileWriter(outputFilename,true));
+            for(CompletedRequest completedRequest : completedRequests) {
+                writer.write(completedRequest.getId() + '\n');
+            }
+            writer.close();
+            break;
+        case DELETE:
+            /* Read all ids from output file into a HashSet */
+            Scanner scanner = new Scanner(new FileReader(outputFilename));
+            HashSet<String> remainingIds = new HashSet<>();
+            while(scanner.hasNextLine()) {
+                remainingIds.add(scanner.nextLine());
+            }
+            scanner.close();
+            /* Remove deleted ids from the HashSet */
+            for(CompletedRequest completedRequest : completedRequests) {
+                String id = completedRequest.getId();
+                if(remainingIds.contains(id)) {
+                    remainingIds.remove(id);
+                }
+            }            
+            /* Output the remaining ids to the file */
+            writer = new BufferedWriter(new FileWriter(outputFilename));
+            for(String id : remainingIds) {
+                writer.write(id+'\n');
+            }
+            writer.close();
+            // Fall through
+        default:
+            removeHttpAuth();
+        }
+    }
+    
     private void runBenchmark(RequestType requestType) throws Exception {
 
         ArrayList<CompletedRequest> completedRequests = new ArrayList<>();
@@ -220,41 +259,7 @@ public class Application {
             }
         }
         /* Cleanup / Housekeeping */
-        BufferedWriter writer;
-        switch(requestType) {
-        case POST:
-            /* Write added IDs out to file */
-            writer = new BufferedWriter(new FileWriter(outputFilename,true));
-            for(CompletedRequest completedRequest : completedRequests) {
-                writer.write(completedRequest.getId() + '\n');
-            }
-            writer.close();
-            break;
-        case DELETE:
-            /* Read all ids from output file into a HashSet */
-            Scanner scanner = new Scanner(new FileReader(outputFilename));
-            HashSet<String> remainingIds = new HashSet<>();
-            while(scanner.hasNextLine()) {
-                remainingIds.add(scanner.nextLine());
-            }
-            scanner.close();
-            /* Remove deleted ids from the HashSet */
-            for(CompletedRequest completedRequest : completedRequests) {
-                String id = completedRequest.getId();
-                if(remainingIds.contains(id)) {
-                    remainingIds.remove(id);
-                }
-            }            
-            /* Output the remaining ids to the file */
-            writer = new BufferedWriter(new FileWriter(outputFilename));
-            for(String id : remainingIds) {
-                writer.write(id+'\n');
-            }
-            writer.close();
-            // Fall through
-        default:
-            removeHttpAuth();
-        }
+        finishJobs(requestType, completedRequests);
     }
 
     private void throwUnhandledException() throws Exception {
