@@ -131,17 +131,11 @@ public class Application {
         };
     }
 
-    private void runBenchmark(RequestType requestType) throws Exception {
-
-        ArrayList<CompletedRequest> completedRequests = new ArrayList<>();
-        completedRequests.ensureCapacity(numRequests);
+    private Runnable[] createJobs(RequestType requestType, ArrayList<CompletedRequest> completedRequests) throws Exception {
         
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        ExecutorService threadpool = Executors.newFixedThreadPool(numConcurrent);
-        
-        /* Create jobs */
         Runnable[] jobs = new Runnable[numRequests];
         int numIds;
         Scanner scanner;
@@ -174,6 +168,18 @@ public class Application {
             }
             scanner.close();
         }
+        return jobs;
+    }
+    
+    private void runBenchmark(RequestType requestType) throws Exception {
+
+        ArrayList<CompletedRequest> completedRequests = new ArrayList<>();
+        completedRequests.ensureCapacity(numRequests);
+
+        ExecutorService threadpool = Executors.newFixedThreadPool(numConcurrent);
+        
+        /* Create jobs */
+        Runnable[] jobs = createJobs(requestType,completedRequests);
         
         /* Submit jobs */
         for(Runnable job : jobs) {
@@ -226,7 +232,7 @@ public class Application {
             break;
         case DELETE:
             /* Read all ids from output file into a HashSet */
-            scanner = new Scanner(new FileReader(outputFilename));
+            Scanner scanner = new Scanner(new FileReader(outputFilename));
             HashSet<String> remainingIds = new HashSet<>();
             while(scanner.hasNextLine()) {
                 remainingIds.add(scanner.nextLine());
