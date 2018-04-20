@@ -8,9 +8,9 @@ import org.springframework.web.client.RestTemplate;
 
 import com.chrisleung.notifications.objects.NotificationWrapper;
 
-public class GetNotificationJob extends NotificationJob {
+public class GetNotificationRequest extends Request {
 
-    GetNotificationJob(RestTemplate r, String endpoint, String id, ArrayList<CompletedRequest> c) {
+    GetNotificationRequest(RestTemplate r, String endpoint, String id, ArrayList<CompletedRequest> c) {
         super(r, endpoint, id, c);
     }
 

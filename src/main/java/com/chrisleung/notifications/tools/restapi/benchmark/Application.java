@@ -74,7 +74,7 @@ public class Application {
     private Map<RequestType,List<Float>> allRequestRates  = new HashMap<>();
     
     // Used to generate random alphanumeric email addresses
-    private RandomString randomString = new RandomString(EMAIL_ADDRESS_LENGTH);
+    private RandomStringGenerator randomString = new RandomStringGenerator(EMAIL_ADDRESS_LENGTH);
     
     @Autowired
     private RestTemplate restTemplate;    
@@ -142,7 +142,7 @@ public class Application {
         Scanner scanner;
         if(requestType == RequestType.POST) {
             for(int i=0; i<numRequests; i++) {
-                jobs[i] = new PostNotificationJob(restTemplate,endpoint,headers,generateRandomEmail(),generateRandomVariantId(),completedRequests);
+                jobs[i] = new PostNotificationRequest(restTemplate,endpoint,headers,generateRandomEmail(),generateRandomVariantId(),completedRequests);
             }
         } else {
             addHttpAuth();  
@@ -151,17 +151,17 @@ public class Application {
             switch(requestType) {
             case GET:                
                 for(int i=0; i<numIds; i++) {
-                    jobs[i] = new GetNotificationJob(restTemplate, endpoint, scanner.next(), completedRequests);
+                    jobs[i] = new GetNotificationRequest(restTemplate, endpoint, scanner.next(), completedRequests);
                 }
                 break;
             case PUT:
                 for(int i=0; i<numIds; i++) {
-                    jobs[i] = new PutNotificationJob(restTemplate, endpoint, scanner.next(), headers, generateRandomEmail(), generateRandomVariantId(), completedRequests);
+                    jobs[i] = new PutNotificationRequest(restTemplate, endpoint, scanner.next(), headers, generateRandomEmail(), generateRandomVariantId(), completedRequests);
                 }
                 break;
             case DELETE:
                 for(int i=0; i<numIds; i++) {
-                    jobs[i] = new DeleteNotificationJob(restTemplate, endpoint, scanner.next(), completedRequests);
+                    jobs[i] = new DeleteNotificationRequest(restTemplate, endpoint, scanner.next(), completedRequests);
                 }
                 break;
             default:

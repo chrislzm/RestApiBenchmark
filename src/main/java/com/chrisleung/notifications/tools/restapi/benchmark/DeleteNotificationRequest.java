@@ -7,15 +7,15 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-public class DeleteNotificationJob extends NotificationJob {
+public class DeleteNotificationRequest extends Request {
 
-    DeleteNotificationJob(RestTemplate r, String endpoint, String id, ArrayList<CompletedRequest> c) {
+    DeleteNotificationRequest(RestTemplate r, String endpoint, String id, ArrayList<CompletedRequest> c) {
         super(r, endpoint, id, c);
     }
 
     @Override
     public void run() {
-        ResponseEntity<Response> response = restTemplate.exchange(url, HttpMethod.DELETE, null, Response.class);
+        ResponseEntity<PostNotificationResponse> response = restTemplate.exchange(url, HttpMethod.DELETE, null, PostNotificationResponse.class);
         CompletedRequest completedRequest = new CompletedRequest(new Date(), response.getBody().getId());
         addCompletedRequest(completedRequest);
     }

@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  * @author Chris Leung
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Response {
+public class PostNotificationResponse {
     String id;
     Boolean success;
 

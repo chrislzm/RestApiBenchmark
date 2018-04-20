@@ -5,21 +5,24 @@ import java.util.ArrayList;
 import org.springframework.web.client.RestTemplate;
 
 /**
- * Used to perform POST, GET, DELETE, or PUT methods on a REST API for a single notification
+ * Template for a POST, GET, DELETE, or PUT request used to benchmark a REST API.
  * 
  * @author Chris Leung
  */
-public abstract class NotificationJob implements Runnable {
+public abstract class Request implements Runnable {
     RestTemplate restTemplate;
     String url;
     ArrayList<CompletedRequest> completedRequests;
     
-    NotificationJob(RestTemplate r, String endpoint, String id, ArrayList<CompletedRequest> c) {
+    Request(RestTemplate r, String endpoint, String id, ArrayList<CompletedRequest> c) {
         restTemplate = r;
         url = id == null ? endpoint : endpoint + '/' + id;
         completedRequests = c;
     }
     
+    /**
+     * run() should call addCompletedRequest() with a CompletedRequest object  
+     */
     @Override
     public abstract void run();
     

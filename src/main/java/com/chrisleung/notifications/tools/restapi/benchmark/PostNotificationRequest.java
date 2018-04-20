@@ -16,11 +16,11 @@ import com.chrisleung.notifications.objects.Notification;
  * 
  * @author Chris Leung
  */
-public class PostNotificationJob extends NotificationJob {
+public class PostNotificationRequest extends Request {
 
     HttpEntity<Notification> entity;
     
-    PostNotificationJob(RestTemplate r, String url, HttpHeaders headers, String email, long variantId, ArrayList<CompletedRequest> c) {
+    PostNotificationRequest(RestTemplate r, String url, HttpHeaders headers, String email, long variantId, ArrayList<CompletedRequest> c) {
         super(r,url,null,c);
         Notification obj = new Notification(email,variantId);
         entity = new HttpEntity<>(obj,headers);
@@ -28,7 +28,7 @@ public class PostNotificationJob extends NotificationJob {
     
     @Override
     public void run() {
-        ResponseEntity<Response> response = restTemplate.exchange(url, HttpMethod.POST, entity, Response.class);
+        ResponseEntity<PostNotificationResponse> response = restTemplate.exchange(url, HttpMethod.POST, entity, PostNotificationResponse.class);
         CompletedRequest completedInfo = new CompletedRequest(new Date(), response.getBody().getId());
         synchronized(completedRequests) {
             completedRequests.add(completedInfo);
