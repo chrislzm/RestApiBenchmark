@@ -16,8 +16,8 @@ Screenshot:
 
 1. Rename `application.properties.blank` to `application.properties` and update values (see Configuration below for additional notes)
     * Important: These properties are used throughout `Application.java`
-2. Code each benchmark test for your REST API
-    * Extending the `Request` class. Use the `PostNotificationRequest`, `GetNotificationRequest`, `PutNotificationRequest`, and `DeleteNotificationRequest` classes as example implementations. These classes can be used directly to benchmark the [Back in Stock Database REST API](https://github.com/chrislzm/BackInStock/tree/master/RestApi), a component of the [Back in Stock](https://github.com/chrislzm/BackInStock) project    
+2. Code each benchmark test
+    * Extend the `Request` class. Use the `PostNotificationRequest`, `GetNotificationRequest`, `PutNotificationRequest`, and `DeleteNotificationRequest` classes as example implementations. These classes can be used directly to benchmark the [Back in Stock Database REST API](https://github.com/chrislzm/BackInStock/tree/master/RestApi), a component of the [Back in Stock](https://github.com/chrislzm/BackInStock) project    
     * Update the `createRequests` method in `Application.java` to properly create and initialize your tests
 3. Compile the application
     * Run the command `./gradlew bootRun` (will compile and run) or
