@@ -97,7 +97,7 @@ public class Application {
                 allRequestRates.put(t, new ArrayList<>());
             }
             
-            /* Run Benchmarks for Requested Tests */
+            /* Run Benchmarks for Specified Methods */
             for(int i=0; i<runs; i++) {
                 log.info(String.format("\nREST API Benchmark Run %s/%s", i+1, runs,numConcurrent));
                 if(requestTypeString.equals(ALL_REQUEST_TYPES)) {
@@ -132,17 +132,17 @@ public class Application {
         };
     }
 
-    private Runnable[] createJobs(RequestType requestType, ArrayList<CompletedRequest> completedRequests) throws Exception {
+    private Runnable[] createRequests(RequestType requestType, ArrayList<CompletedRequest> completedRequests) throws Exception {
         
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        Runnable[] jobs = new Runnable[numRequests];
+        Runnable[] requests = new Runnable[numRequests];
         int numIds;
         Scanner scanner;
         if(requestType == RequestType.POST) {
             for(int i=0; i<numRequests; i++) {
-                jobs[i] = new PostNotificationRequest(restTemplate,endpoint,headers,generateRandomEmail(),generateRandomVariantId(),completedRequests);
+                requests[i] = new PostNotificationRequest(restTemplate,endpoint,headers,generateRandomEmail(),generateRandomVariantId(),completedRequests);
             }
         } else {
             addHttpAuth();  
@@ -151,17 +151,17 @@ public class Application {
             switch(requestType) {
             case GET:                
                 for(int i=0; i<numIds; i++) {
-                    jobs[i] = new GetNotificationRequest(restTemplate, endpoint, scanner.next(), completedRequests);
+                    requests[i] = new GetNotificationRequest(restTemplate, endpoint, scanner.next(), completedRequests);
                 }
                 break;
             case PUT:
                 for(int i=0; i<numIds; i++) {
-                    jobs[i] = new PutNotificationRequest(restTemplate, endpoint, scanner.next(), headers, generateRandomEmail(), generateRandomVariantId(), completedRequests);
+                    requests[i] = new PutNotificationRequest(restTemplate, endpoint, scanner.next(), headers, generateRandomEmail(), generateRandomVariantId(), completedRequests);
                 }
                 break;
             case DELETE:
                 for(int i=0; i<numIds; i++) {
-                    jobs[i] = new DeleteNotificationRequest(restTemplate, endpoint, scanner.next(), completedRequests);
+                    requests[i] = new DeleteNotificationRequest(restTemplate, endpoint, scanner.next(), completedRequests);
                 }
                 break;
             default:
@@ -169,10 +169,13 @@ public class Application {
             }
             scanner.close();
         }
-        return jobs;
+        return requests;
     }
     
-    private void finishJobs(RequestType requestType, ArrayList<CompletedRequest> completedRequests) throws IOException {
+    /**
+     * Run after the benchmark completes. All cleanup/housekeeping should occur here.
+     */
+    private void completeBenchmark(RequestType requestType, ArrayList<CompletedRequest> completedRequests) throws IOException {
         BufferedWriter writer;
         switch(requestType) {
         case POST:
@@ -217,20 +220,20 @@ public class Application {
 
         ExecutorService threadpool = Executors.newFixedThreadPool(numConcurrent);
         
-        /* Create jobs */
-        Runnable[] jobs = createJobs(requestType,completedRequests);
+        /* Create requests */
+        Runnable[] requests = createRequests(requestType,completedRequests);
         
-        /* Submit jobs */
-        for(Runnable job : jobs) {
-            threadpool.execute(job);
+        /* Submit requests */
+        for(Runnable request : requests) {
+            threadpool.execute(request);
         }
         threadpool.shutdown();
-        /* Start the benchmark here, because there is overhead from submitting jobs and ramp-up, which biases request throughput */
+        /* Start the benchmark window here, because there is overhead from submitting requests and ramp-up, which biases request throughput */
         Date benchmarkStart = new Date();
         threadpool.awaitTermination(timelimit, TimeUnit.SECONDS);
         threadpool.shutdownNow();
         
-        /* Find the first job after the shutdown was submitted */
+        /* Find the first request after the shutdown was submitted (= end of benchmark window) */
         for(int i=0; i<completedRequests.size(); i++) {
             if(completedRequests.get(i).getDate().getTime() >= benchmarkStart.getTime()) {
                 Date firstRequest = completedRequests.get(i).getDate();
@@ -258,8 +261,7 @@ public class Application {
                 break;
             }
         }
-        /* Cleanup / Housekeeping */
-        finishJobs(requestType, completedRequests);
+        completeBenchmark(requestType, completedRequests);
     }
 
     private void throwUnhandledException() throws Exception {
