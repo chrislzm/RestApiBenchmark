@@ -2,6 +2,11 @@ package com.chrisleung.notifications.tools.restapi.benchmark;
 
 import java.util.Date;
 
+/**
+ * Stores information about a completed REST API request
+ * @author Chris Leung
+ *
+ */
 public class CompletedRequest {
     private Date date; // The date+time the request was completed
     private String id; // The object ID associated with the completed request 
