@@ -21,7 +21,7 @@ Screenshot:
     * Update the `createRequests` method in `Application.java` to properly create and initialize your tests
 3. Compile the application
     * Run the command `./gradlew bootRun` (will compile and run) or
-    * Build an executable JAR file using `./gradlew build`, which will create a JAR file in `./build/libs/notification-service-0.1.0.jar`
+    * Build an executable JAR file using `./gradlew build`, which will create a JAR file at `./build/libs/restapi-benchmark-0.1.0.jar`
 
 ### Configuration
 
