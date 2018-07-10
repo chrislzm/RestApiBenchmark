@@ -52,6 +52,7 @@ This application is currently configured to test the [Back in Stock Database RES
 
 ### To Do
 * Add/Update code documentation
+* Handle interruption in benchmark test threads so that they terminate gracefully and do not take up resources
 * Refactor (e.g. create interfaces/abstract classes) so that it's easier to add and test other REST APIs
 * Add features
     * Output test results in CSV format
